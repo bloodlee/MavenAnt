@@ -1,0 +1,13 @@
+package com.innoli.sample;
+
+/**
+ * Created by yli on 5/31/15.
+ */
+public interface License {
+
+    /**
+     * License version.
+     */
+    String VERSION = "[license_version]";
+
+}

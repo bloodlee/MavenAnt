@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="get_version" name="change gui version">
+
+    <taskdef resource="net/sf/antcontrib/antlib.xml">
+        <classpath>
+            <pathelement location="./ant-contrib-1.0b3.jar"/>
+        </classpath>
+    </taskdef>
+
+    <property name="version_include_file" location=".\\version.h"/>
+    <property name="file_template" location="License.template"/>
+    <property name="class_file" location="src\\main\\java\\com\\innoli\\sample\\License.java"/>
+
+    <target name="clean">
+        <echo message="Remove ${class_file}..."/>
+        <delete file="${class_file}"/>
+        <echo message="Clean done."/>
+    </target>
+
+    <target name="get_version" depends="clean">
+        <echo message="Retrieve the version from ${version_include_file}..."/>
+        <loadfile srcFile="${version_include_file}" property="version_line">
+            <filterchain>
+                <linecontains>
+                    <contains value="VERSION"/>
+                </linecontains>
+
+            </filterchain>
+        </loadfile>
+        <propertyregex property="version"
+                       input="${version_line}"
+                       regexp=".*VERSION\s*(\d+[.]\d+[.]\d+).*$"
+                       select="\1"/>
+        <loadfile srcFile="${file_template}" property="template_content"/>
+        <propertyregex property="final_content"
+                       input="${template_content}"
+                       regexp="\[license_version\]"
+                       replace="${version}"
+                       global="true"/>
+        <echo message="Get version ${version}"/>
+        <echo message="Generate new ${class_file}..."/>
+        <echo file="${class_file}" append="false">${final_content}</echo>
+        <echo message="New ${class_file} is ready."/>
+    </target>
+
+</project>
